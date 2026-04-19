@@ -441,134 +441,144 @@ export default function Finance() {
 
       {/* Dialogs */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[500px] border-border bg-card p-0 overflow-hidden">
-          <div className="bg-muted/30 p-8 border-b border-border">
-            <DialogTitle className="text-2xl font-black font-display uppercase tracking-tight italic">
-              {editing ? 'Calibrar Transação' : 'Novo Registro de Fluxo'}
-            </DialogTitle>
-            <DialogDescription className="text-xs font-bold uppercase tracking-widest mt-2 text-muted-foreground/60">
-              Parametrização técnica de ativos e passivos financeiros.
-            </DialogDescription>
-          </div>
-
-          <div className="p-8 space-y-6 bg-card/50">
-            <div className="flex gap-2 p-1 bg-muted/30 border border-border">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setForm(p => ({ ...p, type: 'income', category_id: '' }))}
-                className={cn(
-                  'flex-1 h-10 text-[10px] font-black uppercase tracking-widest rounded-none transition-all', 
-                  form.type === 'income' ? 'bg-emerald-500 text-white' : 'text-muted-foreground'
-                )}
-              >
-                Receita
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setForm(p => ({ ...p, type: 'expense', category_id: '' }))}
-                className={cn(
-                  'flex-1 h-10 text-[10px] font-black uppercase tracking-widest rounded-none transition-all', 
-                  form.type === 'expense' ? 'bg-destructive text-white' : 'text-muted-foreground'
-                )}
-              >
-                Despesa
-              </Button>
+        <DialogContent className="border-border bg-card p-0 overflow-hidden sm:max-w-[500px]">
+          <div className="flex h-[100dvh] flex-col sm:h-auto">
+            <div className="bg-muted/30 px-4 pb-4 pt-6 sm:p-8 border-b border-border">
+              <DialogTitle className="text-xl font-black font-display uppercase tracking-tight italic sm:text-2xl">
+                {editing ? 'Calibrar Transação' : 'Novo Registro de Fluxo'}
+              </DialogTitle>
+              <DialogDescription className="text-xs font-bold uppercase tracking-widest mt-2 text-muted-foreground/60">
+                Parametrização técnica de ativos e passivos financeiros.
+              </DialogDescription>
             </div>
 
-            <div className="space-y-2.5">
-              <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Descrição do Evento *</Label>
-              <Input 
-                value={form.description} 
-                onChange={(e) => setForm(p => ({ ...p, description: e.target.value }))} 
-                maxLength={200} 
-                className="h-12 bg-background border-border font-bold text-xs uppercase tracking-widest"
-              />
-            </div>
+            <div className="flex-1 overflow-y-auto px-4 py-6 sm:p-8 space-y-6 bg-card/50">
+              <div className="flex gap-2 p-1 bg-muted/30 border border-border">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setForm(p => ({ ...p, type: 'income', category_id: '' }))}
+                  className={cn(
+                    'flex-1 min-h-[44px] text-[10px] font-black uppercase tracking-widest rounded-none transition-all',
+                    form.type === 'income' ? 'bg-emerald-500 text-white' : 'text-muted-foreground'
+                  )}
+                >
+                  Receita
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setForm(p => ({ ...p, type: 'expense', category_id: '' }))}
+                  className={cn(
+                    'flex-1 min-h-[44px] text-[10px] font-black uppercase tracking-widest rounded-none transition-all',
+                    form.type === 'expense' ? 'bg-destructive text-white' : 'text-muted-foreground'
+                  )}
+                >
+                  Despesa
+                </Button>
+              </div>
 
-            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2.5">
-                <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Valor Operacional (R$) *</Label>
-                <Input 
-                  type="number" 
-                  step="0.01" 
-                  min="0" 
-                  value={form.amount} 
-                  onChange={(e) => setForm(p => ({ ...p, amount: e.target.value }))} 
-                  className="h-12 bg-background border-border font-black text-sm italic"
+                <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Descrição do Evento *</Label>
+                <Input
+                  value={form.description}
+                  onChange={(e) => setForm(p => ({ ...p, description: e.target.value }))}
+                  maxLength={200}
+                  className="min-h-[44px] bg-background border-border font-bold text-xs uppercase tracking-widest"
                 />
               </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+                <div className="space-y-2.5">
+                  <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Valor Operacional (R$) *</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={form.amount}
+                    onChange={(e) => setForm(p => ({ ...p, amount: e.target.value }))}
+                    className="min-h-[44px] bg-background border-border font-black text-sm italic"
+                  />
+                </div>
+                <div className="space-y-2.5">
+                  <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Data do Log *</Label>
+                  <Input
+                    type="date"
+                    value={form.transaction_date}
+                    onChange={(e) => setForm(p => ({ ...p, transaction_date: e.target.value }))}
+                    className="min-h-[44px] bg-background border-border font-bold text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+                <div className="space-y-2.5">
+                  <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Categoria Técnica</Label>
+                  <Select value={form.category_id} onValueChange={(v) => setForm(p => ({ ...p, category_id: v }))}>
+                    <SelectTrigger className="min-h-[44px] bg-background border-border text-xs font-bold uppercase tracking-widest">
+                      <SelectValue placeholder="Sinalizar..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {filteredCategories.map(c => <SelectItem key={c.id} value={c.id} className="text-xs font-bold uppercase tracking-widest">{c.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2.5">
+                  <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Forma de Liquidação</Label>
+                  <Select value={form.payment_method || ''} onValueChange={(v) => setForm(p => ({ ...p, payment_method: v }))}>
+                    <SelectTrigger className="min-h-[44px] bg-background border-border text-xs font-bold uppercase tracking-widest">
+                      <SelectValue placeholder="Definir..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {['Dinheiro', 'PIX', 'Cartão Crédito', 'Cartão Débito', 'Transferência', 'Boleto'].map(m => <SelectItem key={m} value={m} className="text-xs font-bold uppercase tracking-widest">{m}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {form.type === 'expense' && (
+                <div className="space-y-2.5">
+                  <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Credor / Fornecedor</Label>
+                  <Select value={form.supplier_id} onValueChange={(v) => setForm(p => ({ ...p, supplier_id: v }))}>
+                    <SelectTrigger className="min-h-[44px] bg-background border-border text-xs font-bold uppercase tracking-widest">
+                      <SelectValue placeholder="Identificar..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {suppliers.map(s => <SelectItem key={s.id} value={s.id} className="text-xs font-bold uppercase tracking-widest">{s.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
               <div className="space-y-2.5">
-                <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Data do Log *</Label>
-                <Input 
-                  type="date" 
-                  value={form.transaction_date} 
-                  onChange={(e) => setForm(p => ({ ...p, transaction_date: e.target.value }))} 
-                  className="h-12 bg-background border-border font-bold text-xs"
+                <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Notas de Auditoria</Label>
+                <Textarea
+                  value={form.notes}
+                  onChange={(e) => setForm(p => ({ ...p, notes: e.target.value }))}
+                  rows={2}
+                  maxLength={500}
+                  placeholder="Inserir metadados adicionais..."
+                  className="bg-background border-border text-xs font-medium resize-none min-h-[96px]"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2.5">
-                <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Categoria Técnica</Label>
-                <Select value={form.category_id} onValueChange={(v) => setForm(p => ({ ...p, category_id: v }))}>
-                  <SelectTrigger className="h-12 bg-background border-border text-xs font-bold uppercase tracking-widest">
-                    <SelectValue placeholder="Sinalizar..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {filteredCategories.map(c => <SelectItem key={c.id} value={c.id} className="text-xs font-bold uppercase tracking-widest">{c.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2.5">
-                <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Forma de Liquidação</Label>
-                <Select value={form.payment_method || ''} onValueChange={(v) => setForm(p => ({ ...p, payment_method: v }))}>
-                  <SelectTrigger className="h-12 bg-background border-border text-xs font-bold uppercase tracking-widest">
-                    <SelectValue placeholder="Definir..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {['Dinheiro', 'PIX', 'Cartão Crédito', 'Cartão Débito', 'Transferência', 'Boleto'].map(m => <SelectItem key={m} value={m} className="text-xs font-bold uppercase tracking-widest">{m}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="border-t border-border bg-muted/10 px-4 py-4 sm:p-8 flex flex-col gap-3 sm:flex-row">
+              <Button
+                variant="outline"
+                className="min-h-[44px] w-full sm:flex-1 font-black uppercase tracking-widest text-[10px] border-border"
+                onClick={closeDialog}
+              >
+                ABORTAR
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={saveMutation.isPending}
+                className="min-h-[44px] w-full sm:flex-[2] btn-premium uppercase tracking-widest font-black"
+              >
+                {saveMutation.isPending ? 'PROCESSANDO...' : 'EFETIVAR TRANSAÇÃO'}
+              </Button>
             </div>
-
-            {form.type === 'expense' && (
-              <div className="space-y-2.5">
-                <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Credor / Fornecedor</Label>
-                <Select value={form.supplier_id} onValueChange={(v) => setForm(p => ({ ...p, supplier_id: v }))}>
-                  <SelectTrigger className="h-12 bg-background border-border text-xs font-bold uppercase tracking-widest">
-                    <SelectValue placeholder="Identificar..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {suppliers.map(s => <SelectItem key={s.id} value={s.id} className="text-xs font-bold uppercase tracking-widest">{s.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            <div className="space-y-2.5">
-              <Label className="text-[10px] font-black uppercase tracking-[2px] text-muted-foreground/80">Notas de Auditoria</Label>
-              <Textarea 
-                value={form.notes} 
-                onChange={(e) => setForm(p => ({ ...p, notes: e.target.value }))} 
-                rows={2} 
-                maxLength={500} 
-                placeholder="Inserir metadados adicionais..."
-                className="bg-background border-border text-xs font-medium resize-none min-h-[80px]"
-              />
-            </div>
-          </div>
-          
-          <div className="p-8 border-t border-border bg-muted/10 flex gap-3">
-             <Button variant="outline" className="flex-1 h-12 font-black uppercase tracking-widest text-[10px] border-border" onClick={closeDialog}>
-               ABORTAR
-             </Button>
-             <Button onClick={handleSave} disabled={saveMutation.isPending} className="flex-[2] btn-premium h-12 uppercase tracking-widest font-black">
-               {saveMutation.isPending ? 'PROCESSANDO...' : 'EFETIVAR TRANSAÇÃO'}
-             </Button>
           </div>
         </DialogContent>
       </Dialog>

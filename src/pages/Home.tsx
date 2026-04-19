@@ -144,7 +144,7 @@ export default function Home() {
                 </Button>
               ) : (
                 <Link to="/auth" className="text-[10px] font-black uppercase tracking-[3px] text-muted-foreground/60 hover:text-primary transition-all italic border-b border-transparent hover:border-primary">
-                  Professional Access
+                  Acesso de Administrador
                 </Link>
               )}
             </div>

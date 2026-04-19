@@ -127,18 +127,29 @@ export default function Suppliers() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="page-header">
           <h2 className="page-title">Fornecedores</h2>
           <p className="page-description">Gerencie seus fornecedores e parceiros</p>
         </div>
-        <Button onClick={openNew}><Plus className="h-4 w-4 mr-2" />Novo Fornecedor</Button>
+        <Button onClick={openNew} className="min-h-[44px]">
+          <Plus className="h-4 w-4 mr-2" />
+          Novo Fornecedor
+        </Button>
       </div>
 
-      <div className="relative max-w-sm">
+      <div className="relative w-full sm:max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Buscar fornecedor..." className="pl-9" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+        <Input
+          placeholder="Buscar fornecedor..."
+          className="min-h-[44px] pl-9"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+        />
       </div>
 
       {isLoading ? (
@@ -155,10 +166,10 @@ export default function Suppliers() {
         </Card>
       ) : (
         <>
-          <div className="grid gap-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {paged.map((s) => (
               <Card key={s.id} className="shadow-card">
-                <CardContent className="flex items-center gap-4 py-4">
+                <CardContent className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 shrink-0">
                     <Truck className="h-5 w-5 text-primary" />
                   </div>
@@ -170,9 +181,23 @@ export default function Suppliers() {
                       {s.email && <span className="flex items-center gap-1"><Mail className="h-3 w-3" />{s.email}</span>}
                     </div>
                   </div>
-                  <div className="flex gap-1 shrink-0">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(s)}><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setDeleteId(s.id)}><Trash2 className="h-4 w-4" /></Button>
+                  <div className="flex gap-2 shrink-0 pt-2 border-t border-border/50 sm:border-0 sm:pt-0">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="min-h-[44px] min-w-[44px]"
+                      onClick={() => openEdit(s)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="min-h-[44px] min-w-[44px] text-destructive"
+                      onClick={() => setDeleteId(s.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -183,36 +208,75 @@ export default function Suppliers() {
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editing ? 'Editar Fornecedor' : 'Novo Fornecedor'}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Nome *</Label>
-              <Input value={form.name} onChange={(e) => setForm(p => ({ ...p, name: e.target.value }))} maxLength={100} />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label>CNPJ/CPF</Label>
-                <Input value={form.document} onChange={(e) => setForm(p => ({ ...p, document: e.target.value }))} maxLength={20} />
+        <DialogContent className="p-0">
+          <div className="flex h-[100dvh] flex-col sm:h-auto">
+            <DialogHeader className="px-4 pb-4 pt-6 sm:px-6">
+              <DialogTitle>{editing ? 'Editar Fornecedor' : 'Novo Fornecedor'}</DialogTitle>
+            </DialogHeader>
+
+            <div className="flex-1 overflow-y-auto px-4 pb-6 sm:px-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Nome *</Label>
+                  <Input
+                    className="min-h-[44px]"
+                    value={form.name}
+                    onChange={(e) => setForm(p => ({ ...p, name: e.target.value }))}
+                    maxLength={100}
+                  />
+                </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>CNPJ/CPF</Label>
+                    <Input
+                      className="min-h-[44px]"
+                      value={form.document}
+                      onChange={(e) => setForm(p => ({ ...p, document: e.target.value }))}
+                      maxLength={20}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Telefone</Label>
+                    <Input
+                      className="min-h-[44px]"
+                      value={form.phone}
+                      onChange={(e) => setForm(p => ({ ...p, phone: e.target.value }))}
+                      maxLength={20}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Email</Label>
+                  <Input
+                    className="min-h-[44px]"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm(p => ({ ...p, email: e.target.value }))}
+                    maxLength={100}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Observações</Label>
+                  <Textarea
+                    className="min-h-[96px]"
+                    value={form.notes}
+                    onChange={(e) => setForm(p => ({ ...p, notes: e.target.value }))}
+                    rows={3}
+                    maxLength={500}
+                  />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label>Telefone</Label>
-                <Input value={form.phone} onChange={(e) => setForm(p => ({ ...p, phone: e.target.value }))} maxLength={20} />
-              </div>
             </div>
-            <div className="space-y-2">
-              <Label>Email</Label>
-              <Input type="email" value={form.email} onChange={(e) => setForm(p => ({ ...p, email: e.target.value }))} maxLength={100} />
+
+            <div className="border-t border-border bg-background/80 px-4 py-4 backdrop-blur sm:px-6">
+              <Button
+                onClick={handleSave}
+                disabled={saveMutation.isPending}
+                className="min-h-[44px] w-full"
+              >
+                {saveMutation.isPending ? 'Salvando...' : 'Salvar'}
+              </Button>
             </div>
-            <div className="space-y-2">
-              <Label>Observações</Label>
-              <Textarea value={form.notes} onChange={(e) => setForm(p => ({ ...p, notes: e.target.value }))} rows={3} maxLength={500} />
-            </div>
-            <Button onClick={handleSave} disabled={saveMutation.isPending} className="w-full">
-              {saveMutation.isPending ? 'Salvando...' : 'Salvar'}
-            </Button>
           </div>
         </DialogContent>
       </Dialog>

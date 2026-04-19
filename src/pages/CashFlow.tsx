@@ -159,14 +159,16 @@ export default function CashFlow() {
       {/* Main Analysis Chart */}
       <FadeIn delay={0.4}>
         <Card className="stat-card p-0 border-border overflow-hidden bg-background">
-          <CardHeader className="p-10 border-b border-border bg-muted/2">
+          <CardHeader className="p-4 sm:p-8 lg:p-10 border-b border-border bg-muted/2">
              <div className="flex items-center gap-3">
                 <BarChart3 className="h-5 w-5 text-primary" />
-                <CardTitle className="text-2xl font-black font-display uppercase tracking-tighter italic">Comportamento de Fluxo Diário</CardTitle>
+                <CardTitle className="text-base sm:text-xl lg:text-2xl font-black font-display uppercase tracking-tighter italic">
+                  Comportamento de Fluxo Diário
+                </CardTitle>
              </div>
           </CardHeader>
-          <CardContent className="p-10">
-            {isLoading ? <div className="loading-skeleton h-[400px] w-full" /> : !data?.daily_flow?.length ? (
+          <CardContent className="p-4 sm:p-8 lg:p-10">
+            {isLoading ? <div className="loading-skeleton h-[260px] sm:h-[360px] lg:h-[400px] w-full" /> : !data?.daily_flow?.length ? (
               <div className="py-24 text-center border-2 border-dashed border-border/40 rounded-3xl group">
                  <div className="w-16 h-16 bg-muted/10 border border-border mx-auto mb-6 flex items-center justify-center rotate-45 group-hover:rotate-90 transition-transform duration-700">
                     <Activity className="h-8 w-8 text-muted-foreground/20 -rotate-45 group-hover:-rotate-90 transition-transform duration-700" />
@@ -175,7 +177,7 @@ export default function CashFlow() {
                  <p className="text-xs text-muted-foreground/20 mt-2 italic">Aguardando injeção de transações no banco de dados.</p>
               </div>
             ) : (
-                <ChartContainer config={flowConfig} className="h-[400px] w-full mt-6">
+                <ChartContainer config={flowConfig} className="h-[260px] sm:h-[360px] lg:h-[400px] w-full mt-4 sm:mt-6">
                 <BarChart data={data.daily_flow} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" horizontal vertical={false} />
                   <XAxis 
@@ -204,17 +206,17 @@ export default function CashFlow() {
         {/* Balance Evolution */}
         <FadeIn direction="right" delay={0.1}>
           <Card className="stat-card p-0 border-border overflow-hidden bg-background">
-            <CardHeader className="p-8 border-b border-border bg-muted/3">
+            <CardHeader className="p-4 sm:p-6 lg:p-8 border-b border-border bg-muted/3">
               <div className="flex items-center gap-3">
                 <Activity className="h-4 w-4 text-primary" />
                 <CardTitle className="text-base font-black font-display uppercase tracking-tight italic">Evolução do Saldo Projetado</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-10">
+            <CardContent className="p-4 sm:p-8 lg:p-10">
               {!data?.daily_flow?.length ? (
                 <div className="py-20 text-center"><p className="text-[10px] font-black uppercase text-muted-foreground/20 italic">Vetor Vazio</p></div>
               ) : (
-                <ChartContainer config={netConfig} className="h-[300px] w-full">
+                <ChartContainer config={netConfig} className="h-[220px] sm:h-[260px] lg:h-[300px] w-full">
                   <AreaChart data={data.daily_flow} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="gradientNet" x1="0" y1="0" x2="0" y2="1">
@@ -237,13 +239,13 @@ export default function CashFlow() {
         {/* Categories Analysis */}
         <FadeIn direction="left" delay={0.1}>
           <Card className="stat-card p-0 border-border overflow-hidden bg-background">
-            <CardHeader className="p-8 border-b border-border bg-muted/3">
+            <CardHeader className="p-4 sm:p-6 lg:p-8 border-b border-border bg-muted/3">
               <div className="flex items-center gap-3">
                 <Filter className="h-4 w-4 text-primary" />
                 <CardTitle className="text-base font-black font-display uppercase tracking-tight italic">Análise de Segmentos Financeiros</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-8 space-y-10">
+            <CardContent className="p-4 sm:p-6 lg:p-8 space-y-10">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                    <p className="text-[10px] font-black uppercase tracking-[2px] text-emerald-500 italic">Major Assets // Entradas</p>
