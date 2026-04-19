@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { TrendingUp, TrendingDown, DollarSign, Wallet, ArrowUpRight, ArrowDownLeft, Activity, Filter, BarChart3, PieChart } from 'lucide-react';
+import { TrendingUp, TrendingDown, Wallet, ArrowUpRight, ArrowDownLeft, Activity, Filter, BarChart3 } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, AreaChart, Area, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, AreaChart, Area } from 'recharts';
 import { cn } from '@/lib/utils';
 import { FadeIn, StaggerContainer } from '@/components/animations/FadeIn';
+import {
+  CashFlowDateRangeFilter,
+  CASH_FLOW_RANGE_STORAGE_KEY,
+  getDefaultCashFlowRange,
+} from '@/components/cash-flow/CashFlowDateRangeFilter';
 
 interface CashFlowData {
   total_income: number;
@@ -17,13 +21,6 @@ interface CashFlowData {
   daily_flow: Array<{ day: string; label: string; income: number; expense: number; net: number }>;
   by_category: Array<{ category: string; type: string; total: number }>;
 }
-
-const PERIODS = [
-  { key: '7d', label: '7 dias', days: 7 },
-  { key: '30d', label: '30 dias', days: 30 },
-  { key: '90d', label: '90 dias', days: 90 },
-  { key: '365d', label: '1 ano', days: 365 },
-] as const;
 
 const flowConfig: ChartConfig = {
   income: { label: 'Entradas', color: '#FF4B91' },
@@ -34,19 +31,38 @@ const netConfig: ChartConfig = {
   net: { label: 'Saldo', color: '#FF4B91' },
 };
 
+function readStoredCashFlowRange(): { start: string; end: string } | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = sessionStorage.getItem(CASH_FLOW_RANGE_STORAGE_KEY);
+    if (!raw) return null;
+    const p = JSON.parse(raw) as { start?: unknown; end?: unknown };
+    if (typeof p.start === 'string' && typeof p.end === 'string') return { start: p.start, end: p.end };
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
 export default function CashFlow() {
   const { profile } = useAuth();
-  const [period, setPeriod] = useState('30d');
-  const days = PERIODS.find(p => p.key === period)?.days ?? 30;
+  const [startDate, setStartDate] = useState(() => readStoredCashFlowRange()?.start ?? getDefaultCashFlowRange().start);
+  const [endDate, setEndDate] = useState(() => readStoredCashFlowRange()?.end ?? getDefaultCashFlowRange().end);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(CASH_FLOW_RANGE_STORAGE_KEY, JSON.stringify({ start: startDate, end: endDate }));
+    } catch {
+      /* ignore */
+    }
+  }, [startDate, endDate]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['cash-flow', days],
+    queryKey: ['cash-flow', startDate, endDate],
     queryFn: async () => {
-      const start = new Date();
-      start.setDate(start.getDate() - days);
       const { data, error } = await supabase.rpc('get_cash_flow' as any, {
-        p_start_date: start.toISOString().split('T')[0],
-        p_end_date: new Date().toISOString().split('T')[0],
+        p_start_date: startDate,
+        p_end_date: endDate,
       });
       if (error) throw error;
       return data as CashFlowData;
@@ -62,26 +78,40 @@ export default function CashFlow() {
   return (
     <div className="space-y-10 pb-20">
       <FadeIn direction="down">
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-border pb-8">
-          <div className="page-header">
-            <h2 className="page-title italic">Fluxo de Caixa</h2>
-            <p className="page-description">Análise técnica de liquidez e movimentação patrimonial.</p>
+        <div className="space-y-6 border-b border-border pb-8">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="page-header min-w-0">
+              <h2 className="page-title italic">Fluxo de Caixa</h2>
+              <p className="page-description">Análise técnica de liquidez e movimentação patrimonial.</p>
+            </div>
+            <div className="flex h-12 shrink-0 items-center px-4 bg-muted/10 border border-border">
+              <Activity className="h-3.5 w-3.5 text-primary animate-pulse mr-2.5" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mr-3">
+                Período:
+              </span>
+              <span className="text-xs font-bold font-mono truncate max-w-[200px] md:max-w-none" title={`${startDate} → ${endDate}`}>
+                {startDate} → {endDate}
+              </span>
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-             <div className="flex h-12 items-center px-4 bg-muted/10 border border-border">
-                <Activity className="h-3.5 w-3.5 text-primary animate-pulse mr-2.5" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mr-3">Status:</span>
-                <span className="text-xs font-bold font-mono">LIVE_DATA_FEED</span>
-             </div>
-             <div className="flex gap-1.5 rounded-none bg-muted/5 border border-border p-1">
-               {PERIODS.map(p => (
-                 <Button key={p.key} variant="ghost" size="sm" onClick={() => setPeriod(p.key)}
-                   className={cn('h-10 px-6 text-[10px] font-black uppercase tracking-widest transition-all duration-300', 
-                     period === p.key ? 'bg-primary text-white shadow-glow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/10')}>
-                   {p.label}
-                 </Button>
-               ))}
-             </div>
+
+          <div className="rounded-lg border border-border bg-muted/5 p-4">
+            <p className="mb-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              Filtrar por intervalo
+            </p>
+            <CashFlowDateRangeFilter
+              startDate={startDate}
+              endDate={endDate}
+              onRangeChange={(start, end) => {
+                setStartDate(start);
+                setEndDate(end);
+              }}
+              onReset={() => {
+                const d = getDefaultCashFlowRange();
+                setStartDate(d.start);
+                setEndDate(d.end);
+              }}
+            />
           </div>
         </div>
       </FadeIn>
