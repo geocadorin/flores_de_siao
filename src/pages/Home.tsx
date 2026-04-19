@@ -21,6 +21,7 @@ import { FadeIn, StaggerContainer } from '@/components/animations/FadeIn';
 import { cn } from '@/lib/utils';
 import { BrandWordmark } from '@/components/BrandWordmark';
 import { APP_NAME } from '@/lib/branding';
+import { publicUrl } from '@/lib/publicUrl';
 
 // Interfaces
 interface TenantInfo { id: string; name: string; slug: string; phone: string | null; address: string | null; logo_url: string | null; hero_title: string | null; hero_description: string | null; }
@@ -154,7 +155,7 @@ export default function Home() {
         <section className="relative min-h-[70vh] flex items-center justify-center pt-32 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img 
-              src="/img/hero_v2.png" 
+              src={publicUrl('img/hero_v2.png')} 
               alt={`${APP_NAME} — rede de clínicas`}
               className="w-full h-full object-cover object-center opacity-40 dark:opacity-20 scale-110" 
             />
@@ -312,7 +313,7 @@ export default function Home() {
       <section className="relative min-h-[90vh] flex items-center justify-center pt-20 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/img/hero.png" 
+            src={publicUrl('img/hero.png')} 
             alt="Clinic Interior" 
             className="w-full h-full object-cover object-center opacity-40 dark:opacity-30 scale-110" 
           />
@@ -355,7 +356,7 @@ export default function Home() {
             <div className="relative group">
               <div className="absolute -inset-4 bg-primary/10 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
               <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl">
-                 <img src="/img/hero.png" alt="Essence" className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000" />
+                 <img src={publicUrl('img/hero.png')} alt="Essence" className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000" />
                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
                  <div className="absolute bottom-10 left-10 right-10 p-8 rounded-2xl bg-background/20 backdrop-blur-xl border border-white/5 shadow-2xl">
                     <div className="flex items-center gap-4 mb-4">
